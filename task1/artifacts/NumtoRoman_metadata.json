@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "int256",
+						"name": "num",
+						"type": "int256"
+					}
+				],
+				"name": "numtoRoman",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"NumtoRoman.sol": "NumtoRoman"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"NumtoRoman.sol": {
+			"keccak256": "0x3c5d268a182ca917f74c4e215fa99423a3f018a0e7d2d89347265889e8ee741d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6255b2e7d900d3ca411e1a667fb5cad8f8f96edbcb73e531b3d88f38f0a251f3",
+				"dweb:/ipfs/QmRfwwfAre3WF7FrEjvauMuubpEmpcBDDHZ8BnrB4G6etX"
+			]
+		}
+	},
+	"version": 1
+}
