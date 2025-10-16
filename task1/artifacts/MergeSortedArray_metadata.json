@@ -4,32 +4,7 @@
 	},
 	"language": "Solidity",
 	"output": {
-		"abi": [
-			{
-				"inputs": [
-					{
-						"internalType": "int256[]",
-						"name": "a1",
-						"type": "int256[]"
-					},
-					{
-						"internalType": "int256[]",
-						"name": "a2",
-						"type": "int256[]"
-					}
-				],
-				"name": "merge",
-				"outputs": [
-					{
-						"internalType": "int256[]",
-						"name": "",
-						"type": "int256[]"
-					}
-				],
-				"stateMutability": "pure",
-				"type": "function"
-			}
-		],
+		"abi": [],
 		"devdoc": {
 			"kind": "dev",
 			"methods": {},
@@ -43,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"MergeSortedArray.sol": "MergeSortedArray"
+			"BinarySearch.sol": "MergeSortedArray"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -97,12 +72,12 @@
 				"dweb:/ipfs/QmVUSvooZKEdEdap619tcJjTLcAuH6QBdZqAzWwnAXZAWJ"
 			]
 		},
-		"MergeSortedArray.sol": {
-			"keccak256": "0x21af6699d93d45e086b91090db84ef2dbdc109dc5cd3fd2d6c0337c44604933c",
+		"BinarySearch.sol": {
+			"keccak256": "0x64b1252088a0a65d0ed1c078acada1b28ab604bfa852ff89f4dc4eab12085a50",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cbd92f468b4d2726acbb53b99d0cac9621dcb2a2cd2fa4df30c0dc6df9413989",
-				"dweb:/ipfs/QmafXk46egp6rzyU81hQB1LqZaiz6VRzcsjYBGDTzmHTwW"
+				"bzz-raw://7e45a7f96d04a81043d662cffc34dbde0f457f0412d87bdb80864d6ba22177ed",
+				"dweb:/ipfs/QmPudmfBeYQU5SZ1oqjwZy5NUL2TWwoQGQuB5DHGLi5QZN"
 			]
 		},
 		"hardhat/console.sol": {
