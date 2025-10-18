@@ -3,12 +3,14 @@
 # 测试图片
 ![Alt text](image/3-donate1.png)
 
-![Alt text](image/3-donate2.png)
-
-![Alt text](image/3-donate-timeout.png)
-
-![Alt text](image/3-gedonate1.png)
+#
 
 ![Alt text](image/3-gedonate2.png)
 
-![Alt text](image/3-gedonate3.png)
+![Alt text](image/3-gedonate2.png)
+
+![Alt text](image/3-gedonate2.png)
+
+![Alt text](image/3-gedonate2.png)
+
+![Alt text](image/3-gedonate2.png)
