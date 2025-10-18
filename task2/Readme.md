@@ -1,0 +1,14 @@
+合约地址：0x8cC1959e2A035A01014b2F772540624FA6fd3525
+
+# 测试图片
+![Alt text](images/3-donate1.png)
+
+![Alt text](images/3-donate2.png)
+
+![Alt text](images/3-donate-timeout.png)
+
+![Alt text](images/3-gedonate1.png)
+
+![Alt text](images/3-gedonate2.png)
+
+![Alt text](images/3-gedonate3.png)

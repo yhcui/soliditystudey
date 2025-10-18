@@ -1,0 +1,20 @@
+{
+  "name": "我的第一个NFT",
+  "description": "这是我为自己创作的第一个NFT。它代表了无限的可能性。",
+  "image": "ipfs://bafkreigclxkca7slzzykxpotfpaut4ciff3ok7x2as5ibkfc4yiixjxv2e",
+  "attributes": [
+    {
+      "trait_type": "艺术家",
+      "value": "Gemini AI"
+    },
+    {
+      "trait_type": "版本",
+      "value": "1/1"
+    },
+    {
+      "display_type": "number",
+      "trait_type": "稀有度评分",
+      "value": 99
+    }
+  ]
+}

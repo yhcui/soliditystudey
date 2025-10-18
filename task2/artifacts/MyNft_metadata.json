@@ -273,6 +273,19 @@
 				"type": "event"
 			},
 			{
+				"inputs": [],
+				"name": "_tokenIdCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -910,11 +923,11 @@
 			]
 		},
 		"MyNft.sol": {
-			"keccak256": "0x42afe2407230c322c227e9c3a567a7657c43ee0b21384459c8f2f5503c3febac",
+			"keccak256": "0x2e507f3038cd35458555ca98dad9456941a5c2c4fe5ae2f986e42a6b0b4c8f1b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f3c2ed4a6ef78fdea2cce2ab7071cb3520a2fea46b1f60cc9189c6ae31c15e33",
-				"dweb:/ipfs/QmQtCcFpBXqyRxWynVqBGtuw6dZJdo2j5KSkuFdBhvRpjQ"
+				"bzz-raw://7f6766bd1c25d6c6b636d53877fc9d1a5456d1be00cb1f9e55874a7844b198bf",
+				"dweb:/ipfs/QmQrxgECHUrVt5W2Zog3j5Xsrd1okP5CcEcPHCLfMX2Zo7"
 			]
 		}
 	},

@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 contract MyNft is ERC721URIStorage, Ownable{
 
-    uint256 private _tokenIdCounter = 1;
+    uint256 public _tokenIdCounter = 1;
 
     constructor(string memory name,string memory symbol) ERC721(name, symbol) Ownable(msg.sender) {
         
@@ -17,6 +17,6 @@ contract MyNft is ERC721URIStorage, Ownable{
         _setTokenURI(newTokenId, tokenURL);
         _tokenIdCounter++;
         return newTokenId;
-        
+
     }
 }
