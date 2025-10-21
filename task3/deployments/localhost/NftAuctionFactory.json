@@ -1,0 +1,16 @@
+{
+  "address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+  "abi": [
+    "constructor(address,address)",
+    "event AuctionCreated(address indexed,address indexed,address,uint256)",
+    "function allAuctions(uint256) view returns (address)",
+    "function allAuctionsLength() view returns (uint256)",
+    "function auctionImplementation() view returns (address)",
+    "function auctions(address,uint256) view returns (address)",
+    "function createAuction(address,uint256,uint256) returns (address)",
+    "function ethPriceFeed() view returns (address)",
+    "function getAllAuctions() view returns (address[])"
+  ],
+  "args": [],
+  "numDeployments": 3
+}
