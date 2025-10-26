@@ -10,7 +10,7 @@ describe("Auction", async function () {
     //2、获取TestERC721合约
     const testERC721Proxy = await deployments.get("TestERC721");
     const testERC721 = await ethers.getContractAt("TestERC721", testERC721Proxy.address);
-
+    const testERCAddr = await testERC721.getAddress();
     //3、获取NFTAuction合约
     const nftAuctionProxy = await deployments.get("NftAuction");
     const nftAuction = await ethers.getContractAt("NftAuction", nftAuctionProxy.address);
@@ -18,7 +18,10 @@ describe("Auction", async function () {
     //4、获取NFTAuctionFactory合约
     const nftAuctionFactoryProxy = await deployments.get("NftAuctionFactory");
     const nftAuctionFactory = await ethers.getContractAt("NftAuctionFactory", nftAuctionFactoryProxy.address);
-
+    console.log("=============================================================================================================")    
     // 进行自测
+    await testERC721.approve(nftAuctionFactory.target, 1);
+    const add = await nftAuctionFactory.createAuction(testERCAddr, 1,200);
+    console.log(add);
 
 });

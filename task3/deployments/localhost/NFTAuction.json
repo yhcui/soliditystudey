@@ -1,5 +1,5 @@
 {
-  "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+  "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
   "abi": [
     "error AddressEmptyCode(address)",
     "error ERC1967InvalidImplementation(address)",
@@ -30,5 +30,5 @@
     "function upgradeToAndCall(address,bytes) payable"
   ],
   "args": [],
-  "numDeployments": 3
+  "numDeployments": 1
 }
