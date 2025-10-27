@@ -12,6 +12,33 @@ async function main() {
     await deployments.fixture(["deploy_nft_auction"]);
     const ZERO_ADDRESS = ethers.ZeroAddress;
 
+    // 部署ERC20
+    const TestERC20Factory = await ethers.getContractFactory("TestERC20");
+    const TestERC20 = await TestERC20Factory.deploy();
+    const TestERC20Contract = await TestERC20.waitForDeployment();
+    const MTKERC20Address = await TestERC20Contract.getAddress();
+
+
+    // 获取聚合工厂
+    const aggreagatorV3 = await ethers.getContractFactory("AggreagatorV3");
+
+    const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("10000"));
+    const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
+    const priceFeedEthAddress = await priceFeedEth.getAddress();
+
+    const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("5"));
+    const priceFeedMTK = await priceFeedMTKDeploy.waitForDeployment();
+    const priceFeedMTKAddress = await priceFeedMTK.getAddress();
+
+
+    const manyTokens = [{
+        token: ethers.ZeroAddress,
+        priceFeed: priceFeedEthAddress,
+    },{
+        token: MTKERC20Address,
+        priceFeed: priceFeedMTKAddress,
+    }];
+
     //获取代理工厂
     const NftAuctionFactoryProxy = await deployments.get("NftAuctionFactoryProxy");
     console.info("NftAuctionFactoryProxy.address:" + NftAuctionFactoryProxy.address);
@@ -69,9 +96,18 @@ async function main() {
         newAuctionAddress
     );
     // 4. 调用新合约上的 test() 函数
-    const testValue = await auctionContract.test(); 
-    
+    const testValue = await auctionContract.test();
+
+    // 设置预言机
+    for (let i = 0; i < manyTokens.length; i++) {
+        const {tokenAddress,_priceFeed} = manyTokens[i];
+        auctionContract.setPriceFeed(tokenAddress, _priceFeed);
+    }
+
     console.log(`新拍卖合约地址: ${newAuctionAddress}`);
     console.log(`test() 结果: ${testValue}`);
-        
+
+    //开始拍卖
+
+
 }
