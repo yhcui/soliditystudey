@@ -8,9 +8,11 @@ describe("Test Auction", function () {
 });
 
 async function main() { 
-    const [signer,buyer] = await ethers.getSigners();
+    const [signer,buyer1, buyer2] = await ethers.getSigners();
+    console.log("Buyer 1 Address:", await buyer1.getAddress());
     await deployments.fixture(["deploy_nft_auction"]);
     const ZERO_ADDRESS = ethers.ZeroAddress;
+    console.log(`ZERO_ADDRESS: ${ZERO_ADDRESS}`);
 
     // 部署ERC20
     const TestERC20Factory = await ethers.getContractFactory("TestERC20");
@@ -26,10 +28,18 @@ async function main() {
     const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
     const priceFeedEthAddress = await priceFeedEth.getAddress();
 
+    const version = await priceFeedEth.version();
+    console.log(`priceFeedMTK.version: ${version}`);
+    // 你的 Solidity 返回变量名是：roundId, _answer, startedAt, updatedAt, answeredInRound
+    const { roundId, _answer, startedAt, updatedAt, answeredInRound } = await priceFeedEth.latestRoundData();
+
+    // 然后你可以用新的变量名打印
+    console.log(`priceFeedMTK.latestRoundData: ${roundId}, ${_answer}, ${startedAt}, ${updatedAt}, ${answeredInRound}`);
+
     const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("5"));
     const priceFeedMTK = await priceFeedMTKDeploy.waitForDeployment();
     const priceFeedMTKAddress = await priceFeedMTK.getAddress();
-
+    
 
     const manyTokens = [{
         token: ethers.ZeroAddress,
@@ -107,7 +117,22 @@ async function main() {
     console.log(`新拍卖合约地址: ${newAuctionAddress}`);
     console.log(`test() 结果: ${testValue}`);
 
+    // console.log("Auction Contract Instance:", auctionContract);
+    // console.log("Auction Contract Address:", await auctionContract.getAddress());
     //开始拍卖
+    const tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
+    await tx.wait();
+
+    console.log('1111111111111111111111');
+
+    tx = await MTKERC20Address.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
+    await tx.wait();
+    console.log('22222222222222222222');
+
+    //结束拍卖
+    await auctionContract.connect(signer).endAuction();
+
+    //验证拍卖结果
 
 
 }

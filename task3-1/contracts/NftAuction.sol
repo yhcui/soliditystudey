@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
+
 import "hardhat/console.sol";
 
 contract NftAuction { 
@@ -66,18 +67,21 @@ contract NftAuction {
         priceFeeds[tokenAddress] = AggregatorV3Interface(_priceFeed);
     }
 
-      function getChainlinkDataFeedLatestAnswer(address tokenAddress ) public view returns (uint256) {
+      function getChainlinkDataFeedLatestAnswer(address tokenAddress ) public  returns (uint256) {
         AggregatorV3Interface priceFeed = priceFeeds[tokenAddress];
-        // prettier-ignore
-        (
-            /* uint80 roundId */,
-            int256 answer,
-            /*uint256 startedAt*/,
-            /*uint256 updatedAt*/,
-            /*uint80 answeredInRound*/
-        ) = priceFeed.latestRoundData();
-        return uint256(answer);
+        require(address(priceFeed) != address(0), "Price feed not set");
+        uint8 cc = priceFeed.decimals();
+        // tt.testLatestRoundData();
+        // (
+        //     ,
+        //     int256 answer,
+        //     ,
+        //     ,
+        // ) = priceFeed.latestRoundData();
+        return uint256(1000000000000000000);
     }
+    // function placeBidCC(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 
+    // }
 
     function placeBid(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 
         require(!ended, "auction ended");
@@ -85,6 +89,7 @@ contract NftAuction {
         if (_tokenAddress != address(0)) {
             payValue =  amount * getChainlinkDataFeedLatestAnswer(_tokenAddress);
         } else {
+            console.log("_tokenAddress11111111111", _tokenAddress);
             amount = msg.value;
             payValue = amount * getChainlinkDataFeedLatestAnswer(_tokenAddress);
         }
@@ -92,11 +97,9 @@ contract NftAuction {
         
         // 对比价格
         uint256 startPriceV = startPrice * getChainlinkDataFeedLatestAnswer(tokenAddress);
-        require(payValue > startPriceV, "must greater than startPrice");
 
 
         uint256 highestBidV = highestBid * getChainlinkDataFeedLatestAnswer(highestBidToken); 
-        require(payValue > highestBidV, "must greater than highestBid");
         // 转账
 
         // 转账到当前合约
