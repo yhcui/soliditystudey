@@ -12,7 +12,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const TestERC20Contract = await TestERC20Factory.deploy();
     await TestERC20Contract.waitForDeployment();
     const TestERC20Address = await TestERC20Contract.getAddress();
-    console.log(`TestERC20 deployed to: ${TestERC20Address}`);
+    // console.log(`TestERC20 deployed to: ${TestERC20Address}`);
 
     // 2、部署 TestERC721
     // const TestERC721Factory = await ethers.getContractFactory("TestERC721");
@@ -28,7 +28,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const NftAuctionContract = await NftAuctionFactory.deploy();
     await NftAuctionContract.waitForDeployment();
     const NftAuctionAddress = await NftAuctionContract.getAddress();
-    console.log(`NftAuction deployed to: ${NftAuctionAddress}`);
+    // console.log(`NftAuction deployed to: ${NftAuctionAddress}`);
 
 
     // 4、部署 NftAuctionFactory
@@ -36,9 +36,9 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const NftAuctionFactoryProxy = await upgrades.deployProxy(NftAuctionFactoryFactory, [], { initializer: 'initialize' })
     await NftAuctionFactoryProxy.waitForDeployment();
     const NftAuctionFactoryProxyAddress = await NftAuctionFactoryProxy.getAddress();
-    console.log(`NftAuctionFactoryProxy deployed to: ${NftAuctionFactoryProxyAddress}`);
+    // console.log(`NftAuctionFactoryProxy deployed to: ${NftAuctionFactoryProxyAddress}`);
     const NftAuctionFactoryContractAddress = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxyAddress);
-    console.log(`NftAuctionFactoryProxy implementation address: ${NftAuctionFactoryContractAddress}`);
+    // console.log(`NftAuctionFactoryProxy implementation address: ${NftAuctionFactoryContractAddress}`);
 
 
     // 保存 TestERC20

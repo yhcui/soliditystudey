@@ -70,7 +70,7 @@ contract NftAuction {
       function getChainlinkDataFeedLatestAnswer(address tokenAddress ) public  returns (uint256) {
         AggregatorV3Interface priceFeed = priceFeeds[tokenAddress];
         require(address(priceFeed) != address(0), "Price feed not set");
-        uint8 cc = priceFeed.decimals();
+        priceFeed.version();
         // tt.testLatestRoundData();
         // (
         //     ,
@@ -89,7 +89,6 @@ contract NftAuction {
         if (_tokenAddress != address(0)) {
             payValue =  amount * getChainlinkDataFeedLatestAnswer(_tokenAddress);
         } else {
-            console.log("_tokenAddress11111111111", _tokenAddress);
             amount = msg.value;
             payValue = amount * getChainlinkDataFeedLatestAnswer(_tokenAddress);
         }

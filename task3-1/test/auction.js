@@ -9,10 +9,8 @@ describe("Test Auction", function () {
 
 async function main() { 
     const [signer,buyer1, buyer2] = await ethers.getSigners();
-    console.log("Buyer 1 Address:", await buyer1.getAddress());
     await deployments.fixture(["deploy_nft_auction"]);
     const ZERO_ADDRESS = ethers.ZeroAddress;
-    console.log(`ZERO_ADDRESS: ${ZERO_ADDRESS}`);
 
     // 部署ERC20
     const TestERC20Factory = await ethers.getContractFactory("TestERC20");
@@ -27,6 +25,7 @@ async function main() {
     const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("10000"));
     const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
     const priceFeedEthAddress = await priceFeedEth.getAddress();
+   console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
 
     const version = await priceFeedEth.version();
     console.log(`priceFeedMTK.version: ${version}`);
@@ -39,7 +38,7 @@ async function main() {
     const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("5"));
     const priceFeedMTK = await priceFeedMTKDeploy.waitForDeployment();
     const priceFeedMTKAddress = await priceFeedMTK.getAddress();
-    
+    console.log(`priceFeedMTKAddress: ${priceFeedMTKAddress}`);
 
     const manyTokens = [{
         token: ethers.ZeroAddress,
@@ -51,11 +50,9 @@ async function main() {
 
     //获取代理工厂
     const NftAuctionFactoryProxy = await deployments.get("NftAuctionFactoryProxy");
-    console.info("NftAuctionFactoryProxy.address:" + NftAuctionFactoryProxy.address);
     const NftAuctionFactory = await ethers.getContractAt("NftAuctionFactory", NftAuctionFactoryProxy.address);
     // const NftAuctionFactoryAdd = await NftAuctionFactory.getAddress();
     const NftAuctionFactoryImp = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxy.address);
-    console.info("NftAuctionFactoryImp:" + NftAuctionFactoryImp);
 
     // 获取TestERC721
 
@@ -63,7 +60,7 @@ async function main() {
     const TestERC721Contract = await TestERC721Factory.deploy();
     await TestERC721Contract.waitForDeployment();
     const TestERC721Address = await TestERC721Contract.getAddress();
-    console.log(`TestERC721 deployed to: ${TestERC721Address}`);
+    
     const tokenId = 1;
     await TestERC721Contract.mint(signer, tokenId);
 
@@ -114,11 +111,6 @@ async function main() {
         auctionContract.setPriceFeed(tokenAddress, _priceFeed);
     }
 
-    console.log(`新拍卖合约地址: ${newAuctionAddress}`);
-    console.log(`test() 结果: ${testValue}`);
-
-    // console.log("Auction Contract Instance:", auctionContract);
-    // console.log("Auction Contract Address:", await auctionContract.getAddress());
     //开始拍卖
     const tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
     await tx.wait();

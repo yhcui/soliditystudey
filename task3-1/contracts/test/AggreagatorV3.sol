@@ -42,12 +42,7 @@ contract AggreagatorV3 is AggregatorV3Interface {
     external
     view override
     returns (uint80 roundId, int256 _answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound){
-        // roundId = 1;
-        // _answer = answer;
-        // startedAt = 0;
-        // updatedAt = 0;
-        // answeredInRound = 0;
-        return (1, answer, 0, 0, 0);
-    }
+      return (1, answer, 0, 0, 0);
+  }
    
 }
