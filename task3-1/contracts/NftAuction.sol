@@ -75,7 +75,10 @@ contract NftAuction is IERC721Receiver {
             ,
             ,
         ) = priceFeed.latestRoundData();
-        
+
+        // require(answer > 0, "Auction: Invalid price returned by feed");
+        // uint256 pr = uint256(answer);
+        // return pr;
         return uint256(answer);
     }
     // function placeBidCC(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 

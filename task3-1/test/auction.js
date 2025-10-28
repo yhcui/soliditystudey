@@ -2,11 +2,17 @@ const {ethers, deployments,upgrades} = require("hardhat");
 const {expect} = require("chai");
 
 describe("Test Auction", function () { 
-    it("NFT", async function () { 
+    beforeEach(async function () {
         await main();
+    });
+
+    it("NFT", async function () { 
+       await test(); 
     });
 });
 
+async function test() { 
+}
 async function main() { 
     const [signer,buyer1, buyer2] = await ethers.getSigners();
     signerAddress = await signer.getAddress()
