@@ -9,6 +9,13 @@ describe("Test Auction", function () {
 
 async function main() { 
     const [signer,buyer1, buyer2] = await ethers.getSigners();
+    signerAddress = await signer.getAddress()
+    const provider = ethers.provider;
+    const balanceWei = await provider.getBalance(signerAddress);
+    // 4. 将 Wei 转换为 Ether 方便阅读
+    const balanceEther = ethers.formatEther(balanceWei);
+    console.log(`balanceEther: ${balanceEther}`);
+
     await deployments.fixture(["deploy_nft_auction"]);
     const ZERO_ADDRESS = ethers.ZeroAddress;
 
@@ -22,7 +29,7 @@ async function main() {
     // 获取聚合工厂
     const aggreagatorV3 = await ethers.getContractFactory("AggreagatorV3");
 
-    const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("10000"));
+    const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("1"));
     const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
     const priceFeedEthAddress = await priceFeedEth.getAddress();
    console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
@@ -35,7 +42,7 @@ async function main() {
     // 然后你可以用新的变量名打印
     console.log(`priceFeedMTK.latestRoundData: ${roundId}, ${_answer}, ${startedAt}, ${updatedAt}, ${answeredInRound}`);
 
-    const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("5"));
+    const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("0.1"));
     const priceFeedMTK = await priceFeedMTKDeploy.waitForDeployment();
     const priceFeedMTKAddress = await priceFeedMTK.getAddress();
     console.log(`priceFeedMTKAddress: ${priceFeedMTKAddress}`);
@@ -107,8 +114,9 @@ async function main() {
 
     // 设置预言机
     for (let i = 0; i < manyTokens.length; i++) {
-        const {tokenAddress,_priceFeed} = manyTokens[i];
-        auctionContract.setPriceFeed(tokenAddress, _priceFeed);
+        const {token,priceFeed} = manyTokens[i];
+        console.log(`manyTokens[${i}]: ${token}, ${priceFeed}`)
+        auctionContract.setPriceFeed(token, priceFeed);
     }
 
     //开始拍卖
@@ -117,7 +125,8 @@ async function main() {
 
     console.log('1111111111111111111111');
 
-    tx = await MTKERC20Address.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
+    // buyer2买之前需要先给他钱吧
+    tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
     await tx.wait();
     console.log('22222222222222222222');
 
