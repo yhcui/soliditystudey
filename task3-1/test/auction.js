@@ -24,6 +24,7 @@ async function main() {
     const TestERC20 = await TestERC20Factory.deploy();
     const TestERC20Contract = await TestERC20.waitForDeployment();
     const MTKERC20Address = await TestERC20Contract.getAddress();
+    TestERC20Contract.mint(buyer2, ethers.parseEther("10000000"));
 
 
     // 获取聚合工厂
@@ -58,7 +59,7 @@ async function main() {
     //获取代理工厂
     const NftAuctionFactoryProxy = await deployments.get("NftAuctionFactoryProxy");
     const NftAuctionFactory = await ethers.getContractAt("NftAuctionFactory", NftAuctionFactoryProxy.address);
-    // const NftAuctionFactoryAdd = await NftAuctionFactory.getAddress();
+    const NftAuctionFactoryAddress = await NftAuctionFactory.getAddress();
     const NftAuctionFactoryImp = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxy.address);
 
     // 获取TestERC721
@@ -76,6 +77,11 @@ async function main() {
     const startTime = 1;
     const ntfContract = TestERC721Address;
     const nftTokenId = tokenId;
+
+    // await nftContract.connect(owner).setApprovalForAll(factoryAddress, true);
+
+    // --- 或者只授权单个 Token ID（如果不想给所有权限）---
+    await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress, tokenId);
 
     const auctionContractTx = await NftAuctionFactory.createAuction(
         duration,
@@ -109,6 +115,8 @@ async function main() {
         "NftAuction", 
         newAuctionAddress
     );
+
+    const auctionAddress = await auctionContract.getAddress();
     // 4. 调用新合约上的 test() 函数
     const testValue = await auctionContract.test();
 
@@ -120,13 +128,13 @@ async function main() {
     }
 
     //开始拍卖
-    const tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
-    await tx.wait();
-
-    console.log('1111111111111111111111');
-
+    // let tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
+    // await tx.wait();
+    
     // buyer2买之前需要先给他钱吧
-    tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
+    // buyer2授权给合同地址可以转账
+    TestERC20Contract.connect(buyer2).approve(auctionAddress, ethers.MaxUint256);
+    let tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
     await tx.wait();
     console.log('22222222222222222222');
 
