@@ -61,14 +61,14 @@ contract NftAuction is IERC721Receiver {
     }
 
     function setPriceFeed(
-        address tokenAddress,
+        address _tokenAddress,
         address _priceFeed
     ) public {
-        priceFeeds[tokenAddress] = AggregatorV3Interface(_priceFeed);
+        priceFeeds[_tokenAddress] = AggregatorV3Interface(_priceFeed);
     }
 
-      function getChainlinkDataFeedLatestAnswer(address tokenAddress ) public  returns (uint256) {
-        AggregatorV3Interface priceFeed = priceFeeds[tokenAddress];
+      function getChainlinkDataFeedLatestAnswer(address _tokenAddress ) public  returns (uint256) {
+        AggregatorV3Interface priceFeed = priceFeeds[_tokenAddress];
         (
             ,
             int256 answer,
@@ -77,12 +77,12 @@ contract NftAuction is IERC721Receiver {
         ) = priceFeed.latestRoundData();
 
 
-        return uint256(1);
+        return uint256(answer);
     }
     // function placeBidCC(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 
     // }
 
-    function placeBid(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 
+    function placeBid(uint256 _tokenId, uint256 amount, address _tokenAddress) public payable {
         require(!ended, "auction ended");
         uint256  payValue;
         if (_tokenAddress != address(0)) {
@@ -117,6 +117,7 @@ contract NftAuction is IERC721Receiver {
         highestBidder = msg.sender;
         highestBid = amount;
         highestBidToken = _tokenAddress;
+        tokenId = _tokenId;
 
     }
 
