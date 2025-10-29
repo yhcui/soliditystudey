@@ -20,11 +20,11 @@ contract NftAuction is IERC721Receiver {
 
     bool ended;
 
-    address highestBidder;
+    address public highestBidder;
 
-    uint256 highestBid;
+    uint256 public highestBid;
 
-    address highestBidToken;
+    address public highestBidToken;
 
     address ntfContract;
 
@@ -76,10 +76,8 @@ contract NftAuction is IERC721Receiver {
             ,
         ) = priceFeed.latestRoundData();
 
-        // require(answer > 0, "Auction: Invalid price returned by feed");
-        // uint256 pr = uint256(answer);
-        // return pr;
-        return uint256(answer);
+
+        return uint256(1);
     }
     // function placeBidCC(uint256 tokenId, uint256 amount, address _tokenAddress) public payable { 
     // }

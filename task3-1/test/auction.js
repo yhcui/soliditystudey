@@ -2,18 +2,16 @@ const {ethers, deployments,upgrades} = require("hardhat");
 const {expect} = require("chai");
 
 describe("Test Auction", function () { 
-    beforeEach(async function () {
-        await main();
-    });
+    // beforeEach(async function () {
+    //     await main();
+    // });
 
-    it("NFT", async function () { 
-       await test(); 
+    it("Test Auction", async function () {
+       await main();
     });
 });
 
-async function test() { 
-}
-async function main() { 
+async function main() {
     const [signer,buyer1, buyer2] = await ethers.getSigners();
     signerAddress = await signer.getAddress()
     const provider = ethers.provider;
@@ -130,7 +128,7 @@ async function main() {
     for (let i = 0; i < manyTokens.length; i++) {
         const {token,priceFeed} = manyTokens[i];
         console.log(`manyTokens[${i}]: ${token}, ${priceFeed}`)
-        auctionContract.setPriceFeed(token, priceFeed);
+        await auctionContract.setPriceFeed(token, priceFeed);
     }
 
     //开始拍卖
@@ -139,15 +137,22 @@ async function main() {
     
     // buyer2买之前需要先给他钱吧
     // buyer2授权给合同地址可以转账
-    TestERC20Contract.connect(buyer2).approve(auctionAddress, ethers.MaxUint256);
+    await TestERC20Contract.connect(buyer2).approve(auctionAddress, ethers.MaxUint256);
     let tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
     await tx.wait();
-    console.log('22222222222222222222');
 
     //结束拍卖
     await auctionContract.connect(signer).endAuction();
 
     //验证拍卖结果
+    const highestBidder = await auctionContract.highestBidder();
+    const highestBid = await auctionContract.highestBid();
+    console.log(`highestBidder: ${highestBidder}`)
+    expect(highestBidder).to.equal(buyer2.address);
+    expect(highestBid).to.equal(ethers.parseEther("5"));
 
-
+    // 验证拍卖所有权
+    const owner = await TestERC721Contract.ownerOf(nftTokenId);
+    console.log(`owner: ${owner},buyer2.address:${buyer2.address}`)
+    expect(owner).to.equal(buyer2.address);
 }
