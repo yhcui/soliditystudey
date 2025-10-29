@@ -113,7 +113,7 @@ contract NftAuction is IERC721Receiver {
         }
         if (highestBid > 0) {
             // 退款
-            if ( highestBidder == address(0)) {
+            if ( highestBidToken == address(0)) {
                 payable(highestBidder).transfer(highestBid);
             } else {
                 // bool succ= IERC20(highestBidToken).transferFrom(address(this), highestBidder, highestBid);
