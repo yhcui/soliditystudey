@@ -47,7 +47,7 @@ async function main() {
     // 然后你可以用新的变量名打印
     console.log(`priceFeedMTK.latestRoundData: ${roundId}, ${_answer}, ${startedAt}, ${updatedAt}, ${answeredInRound}`);
 
-    const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("0.1"));
+    const priceFeedMTKDeploy = await aggreagatorV3.deploy(ethers.parseEther("10"));
     const priceFeedMTK = await priceFeedMTKDeploy.waitForDeployment();
     const priceFeedMTKAddress = await priceFeedMTK.getAddress();
     console.log(`priceFeedMTKAddress: ${priceFeedMTKAddress}`);
@@ -62,6 +62,7 @@ async function main() {
 
     //获取代理工厂
     const NftAuctionFactoryProxy = await deployments.get("NftAuctionFactoryProxy");
+    // const NftAuctionFactoryProxy = await ethers.getContractFactory("NftAuctionFactoryProxy");
     const NftAuctionFactory = await ethers.getContractAt("NftAuctionFactory", NftAuctionFactoryProxy.address);
     const NftAuctionFactoryAddress = await NftAuctionFactory.getAddress();
     const NftAuctionFactoryImp = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxy.address);
@@ -77,7 +78,7 @@ async function main() {
     await TestERC721Contract.mint(signer, tokenId);
 
     const duration = 60 * 1;
-    const startPrice = BigInt(1) * (BigInt(10) ** BigInt(18));
+    const startPrice = ethers.parseEther("0.1");
     const startTime = 1;
     const ntfContract = TestERC721Address;
     const nftTokenId = tokenId;
@@ -132,13 +133,17 @@ async function main() {
     }
 
     //开始拍卖
-    // let tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
-    // await tx.wait();
+    let tx = await auctionContract.connect(buyer1).placeBid(1, 0, ethers.ZeroAddress,{value: ethers.parseEther("1")});
+    await tx.wait();
+    const highestBidder1 = await auctionContract.highestBidder();
+    const highestBid1 = await auctionContract.highestBid();
+    const highestBidToken1 = await auctionContract.highestBidToken();
+
+    console.log(`highestBidder1: ${highestBidder1},highestBid1: ${highestBid1},highestBidToken1: ${highestBidToken1}`);
     
-    // buyer2买之前需要先给他钱吧
-    // buyer2授权给合同地址可以转账
+    // buyer2授权给合同地址可以转账 - TestERC20Contract合约已经给buyer2一批钱了
     await TestERC20Contract.connect(buyer2).approve(auctionAddress, ethers.MaxUint256);
-    let tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
+    tx = await auctionContract.connect(buyer2).placeBid(1, ethers.parseEther("5"), MTKERC20Address);
     await tx.wait();
 
     //结束拍卖

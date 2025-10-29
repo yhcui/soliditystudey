@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "hardhat/console.sol";
 
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 contract NftAuction is IERC721Receiver { 
 
     address seller;
@@ -28,7 +30,7 @@ contract NftAuction is IERC721Receiver {
 
     address ntfContract;
 
-    uint256 tokenId;
+    uint256 public tokenId;
 
     address tokenAddress;
 
@@ -37,6 +39,8 @@ contract NftAuction is IERC721Receiver {
 
 
     mapping(address => AggregatorV3Interface) public priceFeeds;
+
+    using SafeERC20 for IERC20;
 
     constructor() { 
     }   
@@ -92,27 +96,33 @@ contract NftAuction is IERC721Receiver {
             payValue = amount * getChainlinkDataFeedLatestAnswer(_tokenAddress);
         }
         
-        
         // 对比价格
         uint256 startPriceV = startPrice * getChainlinkDataFeedLatestAnswer(tokenAddress);
 
-
-        uint256 highestBidV = highestBid * getChainlinkDataFeedLatestAnswer(highestBidToken); 
-        // 转账
+        require(payValue > startPriceV, "must greate startPrice");
+        if (highestBid >0 ) {
+            uint256 highestBidV = highestBid * getChainlinkDataFeedLatestAnswer(highestBidToken); 
+            require(payValue > highestBidV, "must greate highestBidV");
+        }
+        
 
         // 转账到当前合约
         if (_tokenAddress != address(0)) {
             bool succ = IERC20(_tokenAddress).transferFrom(msg.sender, address(this), amount);
             require(succ, "transferFrom failed");
         }
-        // 退款
-        if ( highestBidder != address(0)) {
-            bool succ= IERC20(highestBidToken).transferFrom(address(this), highestBidder, highestBid);
-            require(succ, "return failed");
-        } else {
-            payable(highestBidder).transfer(highestBid);
+        if (highestBid > 0) {
+            // 退款
+            if ( highestBidder == address(0)) {
+                payable(highestBidder).transfer(highestBid);
+            } else {
+                // bool succ= IERC20(highestBidToken).transferFrom(address(this), highestBidder, highestBid);
+                // require(succ, "transferFrom failed");
+                IERC20(highestBidToken).transfer(highestBidder, highestBid);
 
+            }
         }
+        
 
         highestBidder = msg.sender;
         highestBid = amount;

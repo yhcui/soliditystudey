@@ -3,9 +3,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {NftAuction} from "./NftAuction.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract NftAuctionFactory is Initializable, UUPSUpgradeable, IERC721Receiver{
+
+contract NftAuctionFactory is Initializable, UUPSUpgradeable{
 
     address public admin;
 
@@ -58,18 +58,5 @@ contract NftAuctionFactory is Initializable, UUPSUpgradeable, IERC721Receiver{
         require(msg.sender == admin, "only admin can upgrade");
     }
 
-    // 实现 ERC721 安全接收回调函数
-    // 这是一个特殊的函数，必须由 NFT 合约调用
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external view override returns (bytes4) {
-        // 确保只有 NFT 合约才能调用此函数（可选的安全检查）
-        // require(msg.sender == address(nftContract), "Invalid caller"); 
-        
-        // 由于您的合约只需要持有 NFT，直接返回魔术值即可
-        return this.onERC721Received.selector;
-    }
+    
 }
