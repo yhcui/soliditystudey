@@ -163,14 +163,25 @@ async function main() {
 
     // 验证升级是否成功
     await deployments.fixture(["update_nft_auction"]);
-    const nftAuctionProxy = await deployments.get("NftAuctionProxy");
+    const nftAuctionProxy = await deployments.get("NftAuctionProxyV2");
     console.log(nftAuctionProxy)
     const nftAuctionV2 = await ethers.getContractAt(
         "NftAuctionV2",
         nftAuctionProxy.address
     );
+    console.log(`nftAuctionProxy.address: ${nftAuctionProxy.address}`);
+    console.log(`nftAuctionV2: ${nftAuctionV2.address}`);
 
     
     const v2 = await nftAuctionV2.testV2();
     console.log(`v2: ${v2}`);
+
+    const auctionContractTxUpdate = await NftAuctionFactoryCon.createAuction(
+        duration,
+        startPrice,
+        startTime,
+        ntfContract,
+        nftTokenId);
+    const v2v = await auctionContractTxUpdate.testV2();
+    console.log(`v2v: ${v2v}`);    
 }
