@@ -17,7 +17,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const implAdd =  await upgrades.erc1967.getImplementationAddress(nftAuctionProxyAddress);
 
     console.log(`__dirname: ${__dirname}`);
-    const nftauctionfactoryStorePath = path.resolve(__dirname, "./.cache/NftAuction.json");
+    const nftauctionfactoryStorePath = path.resolve(__dirname, "./.cache/NftAuctionProxy.json");
 
 
 
