@@ -24,12 +24,12 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     fs.writeFileSync(nftauctionfactoryStorePath, JSON.stringify({
         nftAuctionProxyAddress,
         implAdd,
-        abi: NftAuction.interface.format('json')
+        abi: nftAuctionFactory.interface.format('json')
     }));
 
     await save("NftAuctionProxy", {
         address: nftAuctionProxyAddress,
-        abi: NftAuction.interface.format('json')
+        abi: nftAuctionFactory.interface.format('json')
     });
 
 }

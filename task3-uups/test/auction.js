@@ -61,9 +61,10 @@ async function main() {
     }];
 
     //获取代理工厂
-    const NftAuctionFactory = await deployments.get("NftAuctionFactory");
-    const NftAuctionFactoryC = await ethers.getContractAt("NftAuctionFactory", NftAuctionFactory.address);
-    const NftAuctionFactoryAddress = await NftAuctionFactoryC.getAddress();
+    const NftAuctionFactory = await ethers.getContractFactory("NftAuctionFactory");
+    const NftAuctionFactoryCon = await NftAuctionFactory.deploy();
+    await NftAuctionFactoryCon.waitForDeployment();
+    const NftAuctionFactoryAddress = await NftAuctionFactoryCon.getAddress();
 
     // 获取TestERC721
 
@@ -86,7 +87,7 @@ async function main() {
     // --- 或者只授权单个 Token ID（如果不想给所有权限）---
     await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress, tokenId);
 
-    const auctionContractTx = await NftAuctionFactory.createAuction(
+    const auctionContractTx = await NftAuctionFactoryCon.createAuction(
         duration,
         startPrice,
         startTime,
