@@ -86,6 +86,7 @@ async function main() {
     // await nftContract.connect(owner).setApprovalForAll(factoryAddress, true);
 
     // --- 或者只授权单个 Token ID（如果不想给所有权限）---
+    // await testERC721.connect(signer).setApprovalForAll(nftAuctionProxy.address, true);
     await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress, tokenId);
 
     const auctionContractTx = await NftAuctionFactoryCon.createAuction(
