@@ -37,7 +37,7 @@ async function main() {
     const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("1"));
     const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
     const priceFeedEthAddress = await priceFeedEth.getAddress();
-   console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
+    console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
 
     const version = await priceFeedEth.version();
     console.log(`priceFeedMTK.version: ${version}`);
@@ -76,6 +76,7 @@ async function main() {
     const tokenId = 1;
     await TestERC721Contract.mint(signer, tokenId);
 
+
     const duration = 60 * 1;
     const startPrice = ethers.parseEther("0.1");
     const startTime = 1;
@@ -93,8 +94,11 @@ async function main() {
         startTime,
         ntfContract,
         nftTokenId);
+
+        
     const receipt = await auctionContractTx.wait();
 
+   
     const eventSignature = "AuctionCreated(address,uint256)";
     const eventInterface = NftAuctionFactory.interface.getEvent(eventSignature);
     let newAuctionAddress;
@@ -161,27 +165,42 @@ async function main() {
     expect(owner).to.equal(buyer2.address);
 
 
+    // 获取合约的实现地址
+    const napaddree = await deployments.get("NftAuctionProxy");
+    const napaddreeImp1 = await upgrades.erc1967.getImplementationAddress(napaddree.address);
+
     // 验证升级是否成功
     await deployments.fixture(["update_nft_auction"]);
     const nftAuctionProxy = await deployments.get("NftAuctionProxyV2");
-    console.log(nftAuctionProxy)
+    
+    const napaddreeImp12 = await upgrades.erc1967.getImplementationAddress(nftAuctionProxy.address);
+
+    console.log(`napaddreeImp1: ${napaddreeImp1},napaddreeImp2: ${napaddreeImp12}`);
     const nftAuctionV2 = await ethers.getContractAt(
         "NftAuctionV2",
         nftAuctionProxy.address
     );
-    console.log(`nftAuctionProxy.address: ${nftAuctionProxy.address}`);
-    console.log(`nftAuctionV2: ${nftAuctionV2.address}`);
+    console.log(`nftAuctionProxy.address: ${nftAuctionProxy.address}, nftAuctionV2: ${nftAuctionV2.address}`);
 
     
-    const v2 = await nftAuctionV2.testV2();
-    console.log(`v2: ${v2}`);
+    const tokenIdV2 = 2;
+    await TestERC721Contract.mint(signer, tokenIdV2);
 
-    const auctionContractTxUpdate = await NftAuctionFactoryCon.createAuction(
+    const NftAuctionFactoryAddress2 = await NftAuctionFactoryCon.getAddress();
+
+    await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress2, tokenIdV2);
+     const auctionContractTxUpdate = await NftAuctionFactoryCon.createAuction(
         duration,
         startPrice,
         startTime,
         ntfContract,
-        nftTokenId);
+        tokenIdV2);
+    await auctionContractTxUpdate.wait();
+
+    const v2 = await nftAuctionV2.testV2();
+    console.log(`v2: ${v2}`);
+
+    // 此处会报错，因为虽然升级成功了，但工厂类中使用不到相关的代码。
     const v2v = await auctionContractTxUpdate.testV2();
     console.log(`v2v: ${v2v}`);    
 }
