@@ -21,6 +21,8 @@ async function main() {
     console.log(`balanceEther: ${balanceEther}`);
 
     await deployments.fixture(["deploy_nft_auction"]);
+    await deployments.fixture(["update_nft_auction"]);
+
     const ZERO_ADDRESS = ethers.ZeroAddress;
 
     // 部署ERC20
@@ -37,7 +39,7 @@ async function main() {
     const priceFeedEthDeploy = await aggreagatorV3.deploy(ethers.parseEther("1"));
     const priceFeedEth = await priceFeedEthDeploy.waitForDeployment();
     const priceFeedEthAddress = await priceFeedEth.getAddress();
-    console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
+   console.log(`priceFeedEthAddress: ${priceFeedEthAddress}`);
 
     const version = await priceFeedEth.version();
     console.log(`priceFeedMTK.version: ${version}`);
@@ -61,10 +63,11 @@ async function main() {
     }];
 
     //获取代理工厂
-    const NftAuctionFactory = await ethers.getContractFactory("NftAuctionFactory");
-    const NftAuctionFactoryCon = await NftAuctionFactory.deploy();
-    await NftAuctionFactoryCon.waitForDeployment();
-    const NftAuctionFactoryAddress = await NftAuctionFactoryCon.getAddress();
+    const NftAuctionFactoryProxy = await deployments.get("NftAuctionFactoryProxyV2");
+    // const NftAuctionFactoryProxy = await ethers.getContractFactory("NftAuctionFactoryProxy");
+    const NftAuctionFactory = await ethers.getContractAt("NftAuctionFactoryV2", NftAuctionFactoryProxy.address);
+    const NftAuctionFactoryAddress = await NftAuctionFactory.getAddress();
+    const NftAuctionFactoryImp = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxy.address);
 
     // 获取TestERC721
 
@@ -76,7 +79,6 @@ async function main() {
     const tokenId = 1;
     await TestERC721Contract.mint(signer, tokenId);
 
-
     const duration = 60 * 1;
     const startPrice = ethers.parseEther("0.1");
     const startTime = 1;
@@ -86,20 +88,16 @@ async function main() {
     // await nftContract.connect(owner).setApprovalForAll(factoryAddress, true);
 
     // --- 或者只授权单个 Token ID（如果不想给所有权限）---
-    // await testERC721.connect(signer).setApprovalForAll(nftAuctionProxy.address, true);
     await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress, tokenId);
 
-    const auctionContractTx = await NftAuctionFactoryCon.createAuction(
+    const auctionContractTx = await NftAuctionFactory.createAuction(
         duration,
         startPrice,
         startTime,
         ntfContract,
         nftTokenId);
-
-        
     const receipt = await auctionContractTx.wait();
 
-   
     const eventSignature = "AuctionCreated(address,uint256)";
     const eventInterface = NftAuctionFactory.interface.getEvent(eventSignature);
     let newAuctionAddress;
@@ -121,7 +119,7 @@ async function main() {
 
     // 3. 使用新地址和 NftAuction 的 ABI 创建合约实例
     const auctionContract = await ethers.getContractAt(
-        "NftAuction", 
+        "NftAuctionV2", 
         newAuctionAddress
     );
 
@@ -165,43 +163,6 @@ async function main() {
     console.log(`owner: ${owner},buyer2.address:${buyer2.address}`)
     expect(owner).to.equal(buyer2.address);
 
-
-    // 获取合约的实现地址
-    const napaddree = await deployments.get("NftAuctionProxy");
-    const napaddreeImp1 = await upgrades.erc1967.getImplementationAddress(napaddree.address);
-
-    // 验证升级是否成功
-    await deployments.fixture(["update_nft_auction"]);
-    const nftAuctionProxy = await deployments.get("NftAuctionProxyV2");
-    
-    const napaddreeImp12 = await upgrades.erc1967.getImplementationAddress(nftAuctionProxy.address);
-
-    console.log(`napaddreeImp1: ${napaddreeImp1},napaddreeImp2: ${napaddreeImp12}`);
-    const nftAuctionV2 = await ethers.getContractAt(
-        "NftAuctionV2",
-        nftAuctionProxy.address
-    );
-    console.log(`nftAuctionProxy.address: ${nftAuctionProxy.address}, nftAuctionV2: ${nftAuctionV2.address}`);
-
-    
-    const tokenIdV2 = 2;
-    await TestERC721Contract.mint(signer, tokenIdV2);
-
-    const NftAuctionFactoryAddress2 = await NftAuctionFactoryCon.getAddress();
-
-    await TestERC721Contract.connect(signer).approve(NftAuctionFactoryAddress2, tokenIdV2);
-     const auctionContractTxUpdate = await NftAuctionFactoryCon.createAuction(
-        duration,
-        startPrice,
-        startTime,
-        ntfContract,
-        tokenIdV2);
-    await auctionContractTxUpdate.wait();
-
-    const v2 = await nftAuctionV2.testV2();
-    console.log(`v2: ${v2}`);
-
-    // 此处会报错，因为虽然升级成功了，但工厂类中使用不到相关的代码。
-    const v2v = await auctionContractTxUpdate.testV2();
-    console.log(`v2v: ${v2v}`);    
+    const testV2 = await  auctionContract.testV2();
+    expect(testV2).to.equal(123);
 }
