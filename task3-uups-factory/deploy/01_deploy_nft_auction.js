@@ -12,16 +12,16 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const TestERC20Contract = await TestERC20Factory.deploy();
     await TestERC20Contract.waitForDeployment();
     const TestERC20Address = await TestERC20Contract.getAddress();
-    // console.log(`TestERC20 deployed to: ${TestERC20Address}`);
+    console.log(`TestERC20 deployed to: ${TestERC20Address}`);
 
-    // 2、部署 TestERC721
-    // const TestERC721Factory = await ethers.getContractFactory("TestERC721");
-    // const TestERC721Contract = await TestERC721Factory.deploy();
-    // await TestERC721Contract.waitForDeployment();
-    // const TestERC721Address = await TestERC721Contract.getAddress();
-    // console.log(`TestERC721 deployed to: ${TestERC721Address}`);
-    // const tokenId = 1;
-    // await TestERC721Contract.mint(deployer, tokenId);
+    //    2、部署 TestERC721
+    const TestERC721Factory = await ethers.getContractFactory("TestERC721");
+    const TestERC721Contract = await TestERC721Factory.deploy();
+    await TestERC721Contract.waitForDeployment();
+    const TestERC721Address = await TestERC721Contract.getAddress();
+    console.log(`TestERC721 deployed to: ${TestERC721Address}`);
+    const tokenId = 1;
+    await TestERC721Contract.mint(deployer, tokenId);
 
     // 3、部署 NftAuction
     const NftAuctionFactory = await ethers.getContractFactory("NftAuction");
@@ -36,37 +36,37 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const NftAuctionFactoryProxy = await upgrades.deployProxy(NftAuctionFactoryFactory, [], { initializer: 'initialize' })
     await NftAuctionFactoryProxy.waitForDeployment();
     const NftAuctionFactoryProxyAddress = await NftAuctionFactoryProxy.getAddress();
-    // console.log(`NftAuctionFactoryProxy deployed to: ${NftAuctionFactoryProxyAddress}`);
+    console.log(`NftAuctionFactoryProxy deployed to: ${NftAuctionFactoryProxyAddress}`);
     const NftAuctionFactoryContractAddress = await upgrades.erc1967.getImplementationAddress(NftAuctionFactoryProxyAddress);
-    // console.log(`NftAuctionFactoryProxy implementation address: ${NftAuctionFactoryContractAddress}`);
+    console.log(`NftAuctionFactoryProxy implementation address: ${NftAuctionFactoryContractAddress}`);
 
 
     // 保存 TestERC20
 
-    // const testerc20StorePath = path.resolve(__dirname, "./.cache/TestERC20.json");
-    // fs.writeFileSync(testerc20StorePath, JSON.stringify({
-    //     address: TestERC20Address,
-    //     abi: TestERC20Contract.interface.format('json')
-    // }));
+    const testerc20StorePath = path.resolve(__dirname, "./.cache/TestERC20.json");
+    fs.writeFileSync(testerc20StorePath, JSON.stringify({
+        address: TestERC20Address,
+        abi: TestERC20Contract.interface.format('json')
+    }));
 
     // 保存 TestERC721
-    // const testerc721StorePath = path.resolve(__dirname, "./.cache/TestERC721.json");
-    // fs.writeFileSync(testerc721StorePath, JSON.stringify({
-    //     address: TestERC721Address,
-    //     abi: TestERC721Contract.interface.format('json')
-    // }));
+    const testerc721StorePath = path.resolve(__dirname, "./.cache/TestERC721.json");
+    fs.writeFileSync(testerc721StorePath, JSON.stringify({
+        address: TestERC721Address,
+        abi: TestERC721Contract.interface.format('json')
+    }));
 
-    // await save("TestERC721", {
-    //     address: TestERC721Address,
-    //     abi: TestERC721Contract.interface.format('json')
-    // });
+    await save("TestERC721", {
+        address: TestERC721Address,
+        abi: TestERC721Contract.interface.format('json')
+    });
 
     // 保存 NftAuction
-    // const NftauctionStorePath = path.resolve(__dirname, "./.cache/NftAuction.json");
-    // fs.writeFileSync(NftauctionStorePath, JSON.stringify({
-    //     address: NftAuctionAddress,
-    //     abi: NftAuctionContract.interface.format('json')
-    // }));
+    const NftauctionStorePath = path.resolve(__dirname, "./.cache/NftAuction.json");
+    fs.writeFileSync(NftauctionStorePath, JSON.stringify({
+        address: NftAuctionAddress,
+        abi: NftAuctionContract.interface.format('json')
+    }));
 
     // 保存 NftAuctionFactory
     const nftauctionfactoryStorePath = path.resolve(__dirname, "./.cache/NftAuctionFactory.json");

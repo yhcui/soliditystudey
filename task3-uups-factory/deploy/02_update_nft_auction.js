@@ -7,6 +7,14 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const {save} = deployments;
     const {deployer} = await getNamedAccounts();
 
+
+    const NftAuctionV2Factory = await ethers.getContractFactory("NftAuctionV2");
+    const NftAuctionContractV2 = await NftAuctionV2Factory.deploy();
+    await NftAuctionContractV2.waitForDeployment();
+    const NftAuctionAddressV2 = await NftAuctionContractV2.getAddress();
+    console.log(`NftAuctionV2 deployed to: ${NftAuctionAddressV2}`);
+
+
     const storePath = path.resolve(__dirname, "./.cache/NftAuctionFactory.json");
     const storeDate = JSON.parse(fs.readFileSync(storePath));
     const {NftAuctionFactoryProxyAddress, NftAuctionFactoryContractAddress,abi} =  storeDate;
@@ -17,7 +25,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     const NftAuctionFactoryProxV2 = await upgrades.upgradeProxy(NftAuctionFactoryProxyAddress, NftAuctionFactoryV2);
     await NftAuctionFactoryProxV2.waitForDeployment();
     const NftAuctionFactoryProxV2Addr = await NftAuctionFactoryProxV2.getAddress();
-
+    console.log("NftAuctionFactoryProxyV2:", NftAuctionFactoryProxV2Addr);
   
 
     await save("NftAuctionFactoryProxyV2", {
